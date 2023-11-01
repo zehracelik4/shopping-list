@@ -3,7 +3,6 @@ const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const clearBtn = document.getElementById('clear');
 const itemFilter = document.getElementById('filter');
-const items = itemList.querySelectorAll('li');
 const formBtn = itemForm.querySelector('button');
 let isEditMode = false;
 
@@ -24,13 +23,18 @@ function onAddItemSubmit(e) {
         return;
     }
 
-    if(isEditMode) {
-        const setItemToEdit = itemList.querySelector('edit-mode');
+    if (isEditMode) {
+        const itemToEdit = itemList.querySelector('.edit-mode');
 
-        removeItemFromStorage(itemtoEdit.textContent);
-        itemtoEdit.classList.remove('edit-mode');
-        itemtoEdit.remove();
+        removeItemFromStorage(itemToEdit.textContent);
+        itemToEdit.classList.remove('edit-mode');
+        itemToEdit.remove();
         isEditMode = false;
+    } else {
+        if(checkIfItemExists(newItem)) {
+            alert('Item already exists');
+            return;
+        }
     }
 
     addItemtoDOM(newItem);
@@ -94,6 +98,12 @@ function onClickItem(e) {
     }
 }
 
+function checkIfItemExists(item) {
+    const itemFromStorage = getItemsFromStorage();
+
+    return itemFromStorage.includes(item);
+}
+
 function setItemToEdit(item) {
     isEditMode = true;
 
@@ -105,7 +115,7 @@ function setItemToEdit(item) {
     itemInput.value = item.textContent
 }
 
-function removeItem(e) {
+function removeItem(item) {
     if (confirm('Are you sure?')) {
         item.remove();
         
